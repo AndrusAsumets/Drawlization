@@ -156,6 +156,7 @@ function DrawablePlayer (options) {
     this.dot_flag = false;
     this.color = "red";
     this.size = 20;
+    this.lineCap = "round";
 
     this.drawTick = function(action, e) {
         if (action == 'down') {
@@ -195,7 +196,7 @@ function DrawablePlayer (options) {
         options.ctx.beginPath();
         options.ctx.moveTo(this.prevX, this.prevY);
         options.ctx.lineTo(this.currX, this.currY);
-        options.ctx.lineCap = "round";
+        options.ctx.lineCap = currentPlayer.lineCap;
         options.ctx.strokeStyle = this.color;
         options.ctx.lineWidth = this.size;
         options.ctx.stroke();
@@ -251,7 +252,13 @@ function size(obj) {
     }
     //if (currentPlayer.color == "white") currentPlayer.size = 14;
     //else currentPlayer.size = 2;
+
 }
+function setLineCap(obj) {
+        console.log(obj);
+        currentPlayer.lineCap = obj.id;
+    }
+
 
 function createHiDPICanvas (w, h, ratio) {
     if (!ratio) { ratio = PIXEL_RATIO; }

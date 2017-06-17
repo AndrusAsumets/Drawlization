@@ -99,3 +99,19 @@ html, body {
     width: 3px;
     height: 3px;
 }
+
+.shape-palette p {
+    text-align: center;
+    font-weight: bold;
+    margin: 0px;
+}
+
+.shape-palette ul {
+    margin: 0px;
+}
+
+.shape-palette ul > li {
+    list-style: none;
+    float: left;
+    margin-right: 12px;
+}
