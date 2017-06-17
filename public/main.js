@@ -24,29 +24,31 @@ image.src = '/mandala.png';
 
 drawableLayer = new DrawableLayer({canvas: canvas, ctx: ctx});
 
+var isMouseDown = false
 canvas.addEventListener("mousemove", function (e) {
-    drawableLayer.drawTick('move', e);
+    	if (isMouseDown) socket.emit('message', { action: 'move', data: { offsetX: e.offsetX, offsetY: e.offsetY, clientX: e.clientX, clientY: e.clientY }})
 }, false);
 canvas.addEventListener("mousedown", function (e) {
-    drawableLayer.drawTick('down', e);
+    isMouseDown = true
 }, false);
 canvas.addEventListener("mouseup", function (e) {
-    drawableLayer.drawTick('up', e);
+	isMouseDown = false
+	socket.emit('message', { action: 'out'})
 }, false);
 canvas.addEventListener("mouseout", function (e) {
-    drawableLayer.drawTick('out', e);
+	isMouseDown = false
+	socket.emit('message', { action: 'out'})
 }, false);
 
 var socket = io.connect('http://188.166.74.97:1337');
 
 socket.on('connect', function() {
 	console.log('connected')
-
-	socket.emit('message', 'Hello World!')
 });
-
+	
 socket.on('message', function(msg) {
-	console.log(msg)
+	if (msg.action == 'move') drawableLayer.drawTick('move', msg.data);
+	else if (msg.action == 'out') drawableLayer.drawTick('out', msg);
 });
 
 function DrawableLayer (options) {
@@ -78,15 +80,19 @@ function DrawableLayer (options) {
         }
         if (action == 'up' || action == "out") {
             this.flag = false;
+            this.prevX = null
+            this.prexY = null
         }
         if (action == 'move') {
-            if (this.flag) {
-                this.prevX = this.currX;
-                this.prevY = this.currY;
-                this.currX = e.clientX - options.canvas.offsetLeft;
-                this.currY = e.clientY - options.canvas.offsetTop;
-                this.draw();
-            }
+				if (!this.prevX) this.prevX = e.offsetX
+				if (!this.prevY) this.prevY = e.offsetY
+				this.currX = e.offsetX;
+				this.currY = e.offsetY;
+			
+				this.flag = true
+				this.draw();
+				this.prevX = e.offsetX
+				this.prevY = e.offsetY
         }
     }
     this.draw = function () {
