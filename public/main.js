@@ -34,31 +34,42 @@ image.src = '/mandala.png';
 drawableLayer = new DrawableLayer({canvas: canvas1, ctx: ctx1});
 
 var isMouseDown = false
-canvas2.addEventListener("mousemove", function (e) {
-    	if (isMouseDown) {
-			var action = {
-				action: 'move',
-				data: {
-					offsetX: e.offsetX,
-					offsetY: e.offsetY,
-					clientX: e.clientX,
-					clientY: e.clientY
-				}}
-    		socket.emit('message', action)
-    		drawableLayer.drawTick('move', action.data);
-    	}
-}, false);
-canvas2.addEventListener("mousedown", function (e) {
-    isMouseDown = true
-}, false);
-canvas2.addEventListener("mouseup", function (e) {
+canvas2.addEventListener("mousemove", function (e) { onMove(e) }, false);
+canvas2.addEventListener("mousedown", function (e) { isMouseDown = true }, false);
+canvas2.addEventListener("mouseup", function (e) { onUp() }, false);
+canvas2.addEventListener("mouseout", function (e) { onOut() }, false);
+
+canvas2.addEventListener("pointermove", function (e) { onMove(e) }, false);
+canvas2.addEventListener("pointerdown", function (e) { isMouseDown = true }, false);
+canvas2.addEventListener("pointerup", function (e) { onUp() }, false);
+canvas2.addEventListener("pointerout", function (e) { onOut() }, false);
+
+function onMove(e) {
+	if (isMouseDown) {
+		var action = {
+			action: 'move',
+			data: {
+				offsetX: e.offsetX,
+				offsetY: e.offsetY,
+				clientX: e.clientX,
+				clientY: e.clientY
+			}}
+		socket.emit('message', action)
+		drawableLayer.drawTick('move', action.data);
+	}
+}
+
+function onUp() {
 	isMouseDown = false
 	socket.emit('message', { action: 'out'})
-}, false);
-canvas2.addEventListener("mouseout", function (e) {
+	drawableLayer.drawTick('out', { action: 'out'});
+}
+
+function onOut() {
 	isMouseDown = false
 	socket.emit('message', { action: 'out'})
-}, false);
+	drawableLayer.drawTick('out', { action: 'out'});
+}
 
 var socket = io.connect('http://188.166.74.97:1337');
 
@@ -120,7 +131,7 @@ function DrawableLayer (options) {
         options.ctx.moveTo(this.prevX, this.prevY);
         options.ctx.lineTo(this.currX, this.currY);
         options.ctx.strokeStyle = this.x;
-        options.ctx.lineWidth = this.y;
+        options.ctx.lineWidth = this.y * 10;
         options.ctx.stroke();
         options.ctx.closePath();
     }
