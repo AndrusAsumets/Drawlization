@@ -1,0 +1,25 @@
+<html>
+	<head>
+		 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+		 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+	</head>
+	<body>
+		<div class="content">
+			
+		</div>
+		
+		<script>
+			var socket = io.connect('http://localhost:1337')
+			
+			socket.on('connect', function() {
+				console.log('connected')
+				
+				socket.emit('message', 'Hello World!')
+			})
+			
+			socket.on('message', function(msg) {
+				console.log(msg)
+			})
+		</script>
+	</body>
+</html>
