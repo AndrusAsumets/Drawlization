@@ -36,7 +36,9 @@ var currentPlayer = new DrawablePlayer({canvas: canvas1, ctx: ctx1});
 players[currentPlayer.id] = currentPlayer;
 
 var isMouseDown = false
-canvas2.addEventListener("mousemove", function (e) { onMove(e) }, false);
+canvas2.addEventListener("mousemove", function (e) {
+	if (isMouseDown) { onMove(e) }
+}, false);
 canvas2.addEventListener("mousedown", function (e) { isMouseDown = true }, false);
 canvas2.addEventListener("mouseup", function (e) { onUp(e) }, false);
 canvas2.addEventListener("mouseout", function (e) { onUp(e) }, false);
@@ -49,20 +51,18 @@ canvas2.addEventListener("touchout", function (e) { onUp(e) }, false);
 function onMove(e) {
 	e.preventDefault();
 	
-	if (isMouseDown) {
-		var action = {
-			action: 'move',
-			data: {
-                playerId: currentPlayer.id,
-				offsetX: e.offsetX,
-				offsetY: e.offsetY,
-				clientX: e.clientX,
-				clientY: e.clientY,
-                color: currentPlayer.color,
-			}}
-		socket.emit('message', action)
-		currentPlayer.drawTick('move', action.data);
-	}
+	var action = {
+		action: 'move',
+		data: {
+            playerId: currentPlayer.id,
+			offsetX: e.offsetX,
+			offsetY: e.offsetY,
+			clientX: e.clientX,
+			clientY: e.clientY,
+            color: currentPlayer.color,
+		}}
+	socket.emit('message', action)
+	currentPlayer.drawTick('move', action.data);
 }
 
 function onUp(e) {
