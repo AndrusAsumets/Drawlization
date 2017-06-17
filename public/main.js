@@ -76,6 +76,7 @@ function onMove(e) {
 			clientY: e.clientY,
             color: currentPlayer.color,
             size: currentPlayer.size,
+            lineCap: currentPlayer.lineCap
 		}
     };
 
@@ -127,6 +128,10 @@ function drawTick (action, data) {
     }
     if (data.size) {
         players[data.playerId].size = data.size;
+    }
+
+    if (data.lineCap) {
+        players[data.playerId].lineCap = data.lineCap;
     }
     players[data.playerId].drawTick(action, data);
 }
@@ -196,7 +201,7 @@ function DrawablePlayer (options) {
         options.ctx.beginPath();
         options.ctx.moveTo(this.prevX, this.prevY);
         options.ctx.lineTo(this.currX, this.currY);
-        options.ctx.lineCap = currentPlayer.lineCap;
+        options.ctx.lineCap = this.lineCap;
         options.ctx.strokeStyle = this.color;
         options.ctx.lineWidth = this.size;
         options.ctx.stroke();
