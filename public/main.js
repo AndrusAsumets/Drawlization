@@ -65,23 +65,19 @@ function onMove(e) {
     }
 
 	e.preventDefault();
-    console.log('evt.targetTouches[0]', e);
 
 	var action = {
 		action: 'move',
 		data: {
             playerId: currentPlayer.id,
-			offsetX: e.offsetX || e.touches[0].clientX,
-			offsetY: e.offsetY || e.touches[0].clientY,
+			offsetX: e.offsetX || e.touches[0].clientX - canvas2.offsetLeft,
+			offsetY: e.offsetY || e.touches[0].clientY - canvas2.offsetTop,
 			clientX: e.clientX,
 			clientY: e.clientY,
             color: currentPlayer.color,
             size: currentPlayer.size,
 		}
     };
-
-    console.log('data is: ', action.data);
-
 
 	socket.emit('message', action)
 	currentPlayer.drawTick('move', action.data);
@@ -199,7 +195,7 @@ function DrawablePlayer (options) {
         options.ctx.beginPath();
         options.ctx.moveTo(this.prevX, this.prevY);
         options.ctx.lineTo(this.currX, this.currY);
-        options.ctx.lineCap="square";
+        options.ctx.lineCap = "round";
         options.ctx.strokeStyle = this.color;
         options.ctx.lineWidth = this.size;
         options.ctx.stroke();
