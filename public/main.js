@@ -73,6 +73,7 @@ function onMove(e) {
 			clientX: e.clientX,
 			clientY: e.clientY,
             color: currentPlayer.color,
+            size: currentPlayer.size,
 		}}
 	socket.emit('message', action)
 	currentPlayer.drawTick('move', action.data);
@@ -118,6 +119,9 @@ function drawTick (action, data) {
     console.log('Draw', action, data.playerId);
     if (data.color) {
         players[data.playerId].color = data.color;
+    }
+    if (data.size) {
+        players[data.playerId].size = data.size;
     }
     players[data.playerId].drawTick(action, data);
 }
@@ -217,6 +221,28 @@ function color(obj) {
             break;
         case "white":
             currentPlayer.color = "white";
+            break;
+    }
+    //if (currentPlayer.color == "white") currentPlayer.size = 14;
+    //else currentPlayer.size = 2;
+}
+
+function size(obj) {
+    switch (obj.id) {
+        case "size30":
+            currentPlayer.size = 30;
+            break;
+        case "size20":
+            currentPlayer.size = 20;
+            break;
+        case "size10":
+            currentPlayer.size = 10;
+            break;
+        case "size5":
+            currentPlayer.size = 5;
+            break;
+        case "size3":
+            currentPlayer.size = 3;
             break;
     }
     //if (currentPlayer.color == "white") currentPlayer.size = 14;
