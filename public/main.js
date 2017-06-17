@@ -54,7 +54,7 @@ canvas2.addEventListener("touchend", function (e) { onUp(e) }, false);
 
 function onMove(e) {
     // Move cursor along
-    cursor.style.left = (e.clientX + canvas2.offsetLeft - (currentPlayer.size / 2)) + 'px';
+    cursor.style.left = (e.clientX - (currentPlayer.size / 2)) + 'px';
     cursor.style.top = (e.clientY - (currentPlayer.size / 2)) + 'px';
     cursor.style.display = 'block';
     cursor.style.width = currentPlayer.size + 'px';
