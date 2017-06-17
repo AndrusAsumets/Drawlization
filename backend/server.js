@@ -22,7 +22,7 @@ io.on('connection', (context, data) => {
 })
 
 io.on('message', (context, data) => {
-	 io.broadcast.emit('message', data)
+	io.broadcast('message', data)
 })
 
 app.listen(PORT)
