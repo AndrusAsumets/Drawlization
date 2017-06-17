@@ -55,7 +55,8 @@ function onMove(e) {
 				offsetX: e.offsetX,
 				offsetY: e.offsetY,
 				clientX: e.clientX,
-				clientY: e.clientY
+				clientY: e.clientY,
+                color: currentPlayer.color,
 			}}
 		socket.emit('message', action)
 		currentPlayer.drawTick('move', action.data);
@@ -98,6 +99,9 @@ socket.on('message', function(msg) {
 function drawTick (action, data) {
     if (data.playerId === currentPlayer.id) return;
     console.log('Draw', action, data.playerId);
+    if (data.color) {
+        players[data.playerId].color = data.color;
+    }
     players[data.playerId].drawTick(action, data);
 }
 
@@ -124,11 +128,12 @@ function DrawablePlayer (options) {
     this.prevY = 0;
     this.currY = 0;
     this.dot_flag = false;
-    this.x = "red";
+    this.color = "red";
     this.y = 2;
 
     this.drawTick = function(action, e) {
         if (action == 'down') {
+            console.log('down');
             this.currX = e.clientX - options.canvas.offsetLeft;
             this.currY = e.clientY - options.canvas.offsetTop;
             this.prevX = this.currX;
@@ -138,7 +143,7 @@ function DrawablePlayer (options) {
             this.dot_flag = true;
             if (this.dot_flag) {
                 options.ctx.beginPath();
-                options.ctx.fillStyle = this.x;
+                options.ctx.fillStyle = this.color;
                 options.ctx.fillRect(this.currX, this.currY, 2, 2);
                 options.ctx.closePath();
                 this.dot_flag = false;
@@ -165,7 +170,7 @@ function DrawablePlayer (options) {
         options.ctx.beginPath();
         options.ctx.moveTo(this.prevX, this.prevY);
         options.ctx.lineTo(this.currX, this.currY);
-        options.ctx.strokeStyle = this.x;
+        options.ctx.strokeStyle = this.color;
         options.ctx.lineWidth = this.y * 10;
         options.ctx.stroke();
         options.ctx.closePath();
@@ -175,28 +180,28 @@ function DrawablePlayer (options) {
 function color(obj) {
     switch (obj.id) {
         case "green":
-            currentPlayer.x = "green";
+            currentPlayer.color = "green";
             break;
         case "blue":
-            currentPlayer.x = "blue";
+            currentPlayer.color = "blue";
             break;
         case "red":
-            currentPlayer.x = "red";
+            currentPlayer.color = "red";
             break;
         case "yellow":
-            currentPlayer.x = "yellow";
+            currentPlayer.color = "yellow";
             break;
         case "orange":
-            currentPlayer.x = "orange";
+            currentPlayer.color = "orange";
             break;
         case "black":
-            currentPlayer.x = "black";
+            currentPlayer.color = "black";
             break;
         case "white":
-            currentPlayer.x = "white";
+            currentPlayer.color = "white";
             break;
     }
-    if (currentPlayer.x == "white") currentPlayer.y = 14;
+    if (currentPlayer.color == "white") currentPlayer.y = 14;
     else currentPlayer.y = 2;
 }
 
