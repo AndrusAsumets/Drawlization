@@ -10,32 +10,41 @@ var PIXEL_RATIO = (function () {
     return dpr / bsr;
 })();
 
-// Create canvas with the device resolution.
-var canvas = createHiDPICanvas(800, 800);
-document.body.appendChild(canvas);
-var ctx = canvas.getContext("2d");
+// Create lower canvas, to draw on
+var canvas1 = createHiDPICanvas(800, 800);
+canvas1.style.position = 'absolute';
+canvas1.style.zIndex = 1;
+document.body.appendChild(canvas1);
+var ctx1 = canvas1.getContext("2d");
+
+// Create higher canvas, to overlay the image
+var canvas2 = createHiDPICanvas(800, 800);
+canvas2.style.position = 'absolute';
+canvas2.style.zIndex = 2;
+document.body.appendChild(canvas2);
+var ctx2 = canvas2.getContext("2d");
 
 // Load and draw image
 var image = new Image();
 image.onload = function () {
-    ctx.drawImage(this, 0, 0, this.naturalWidth / 2, this.naturalHeight / 2);
+    ctx2.drawImage(this, 0, 0, this.naturalWidth / 2, this.naturalHeight / 2);
 };
 image.src = '/mandala.png';
 
-drawableLayer = new DrawableLayer({canvas: canvas, ctx: ctx});
+drawableLayer = new DrawableLayer({canvas: canvas1, ctx: ctx1});
 
 var isMouseDown = false
-canvas.addEventListener("mousemove", function (e) {
+canvas2.addEventListener("mousemove", function (e) {
     	if (isMouseDown) socket.emit('message', { action: 'move', data: { offsetX: e.offsetX, offsetY: e.offsetY, clientX: e.clientX, clientY: e.clientY }})
 }, false);
-canvas.addEventListener("mousedown", function (e) {
+canvas2.addEventListener("mousedown", function (e) {
     isMouseDown = true
 }, false);
-canvas.addEventListener("mouseup", function (e) {
+canvas2.addEventListener("mouseup", function (e) {
 	isMouseDown = false
 	socket.emit('message', { action: 'out'})
 }, false);
-canvas.addEventListener("mouseout", function (e) {
+canvas2.addEventListener("mouseout", function (e) {
 	isMouseDown = false
 	socket.emit('message', { action: 'out'})
 }, false);
@@ -104,6 +113,34 @@ function DrawableLayer (options) {
         options.ctx.stroke();
         options.ctx.closePath();
     }
+}
+
+function color(obj) {
+    switch (obj.id) {
+        case "green":
+            drawableLayer.x = "green";
+            break;
+        case "blue":
+            drawableLayer.x = "blue";
+            break;
+        case "red":
+            drawableLayer.x = "red";
+            break;
+        case "yellow":
+            drawableLayer.x = "yellow";
+            break;
+        case "orange":
+            drawableLayer.x = "orange";
+            break;
+        case "black":
+            drawableLayer.x = "black";
+            break;
+        case "white":
+            drawableLayer.x = "white";
+            break;
+    }
+    if (drawableLayer.x == "white") drawableLayer.y = 14;
+    else drawableLayer.y = 2;
 }
 
 function createHiDPICanvas (w, h, ratio) {
