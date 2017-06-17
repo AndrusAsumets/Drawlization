@@ -10,6 +10,8 @@ var PIXEL_RATIO = (function () {
     return dpr / bsr;
 })();
 
+var cursor = document.getElementById('cursor');
+
 // Create lower canvas, to draw on
 var canvas1 = createHiDPICanvas(800, 800);
 canvas1.style.position = 'absolute';
@@ -20,7 +22,7 @@ var ctx1 = canvas1.getContext("2d");
 // Create higher canvas, to overlay the image
 var canvas2 = createHiDPICanvas(800, 800);
 canvas2.style.position = 'absolute';
-canvas2.style.zIndex = 2;
+canvas2.style.zIndex = 3;
 document.body.appendChild(canvas2);
 var ctx2 = canvas2.getContext("2d");
 
@@ -50,7 +52,14 @@ canvas2.addEventListener("touchout", function (e) { onUp(e) }, false);
 
 function onMove(e) {
 	e.preventDefault();
-	
+
+    // Move cursor along
+    cursor.style.left = (e.clientX + canvas2.offsetLeft - (currentPlayer.size / 2)) + 'px';
+    cursor.style.top = (e.clientY - (currentPlayer.size / 2)) + 'px';
+    cursor.style.display = 'block';
+    cursor.style.width = currentPlayer.size + 'px';
+    cursor.style.height = currentPlayer.size + 'px';
+
 	var action = {
 		action: 'move',
 		data: {
@@ -67,7 +76,7 @@ function onMove(e) {
 
 function onUp(e) {
 	e.preventDefault();
-	
+
 	isMouseDown = false
 	socket.emit('message', { action: 'out', data: { playerId: currentPlayer.id }});
 	currentPlayer.drawTick('out', { action: 'out'});
@@ -133,7 +142,7 @@ function DrawablePlayer (options) {
     this.currY = 0;
     this.dot_flag = false;
     this.color = "red";
-    this.y = 2;
+    this.size = 20;
 
     this.drawTick = function(action, e) {
         if (action == 'down') {
@@ -174,8 +183,9 @@ function DrawablePlayer (options) {
         options.ctx.beginPath();
         options.ctx.moveTo(this.prevX, this.prevY);
         options.ctx.lineTo(this.currX, this.currY);
+        options.ctx.lineCap="round";
         options.ctx.strokeStyle = this.color;
-        options.ctx.lineWidth = this.y * 10;
+        options.ctx.lineWidth = this.size;
         options.ctx.stroke();
         options.ctx.closePath();
     }
@@ -205,8 +215,8 @@ function color(obj) {
             currentPlayer.color = "white";
             break;
     }
-    if (currentPlayer.color == "white") currentPlayer.y = 14;
-    else currentPlayer.y = 2;
+    //if (currentPlayer.color == "white") currentPlayer.size = 14;
+    //else currentPlayer.size = 2;
 }
 
 function createHiDPICanvas (w, h, ratio) {
