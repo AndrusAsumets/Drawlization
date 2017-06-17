@@ -10,17 +10,10 @@ const io = new IO()
 
 const PORT = process.env.PORT || 1337
 
-router.get('/',
-    async function(next) {
-        console.log('../index.html')
-        this.body = fs.readFileSync('../index.html', 'utf8')
-    }
-)
-
 app.use(bodyParser())
 app.use(cors())
 app.use(router.routes())
-app.use(serve('../static'), { hidden: true })
+app.use(serve('../public'), { hidden: true })
 
 io.attach(app)
 
