@@ -1,0 +1,49 @@
+html, body {
+    padding: 0;
+    margin: 0;
+}
+.toolbar {
+    background-color: #eee;
+    width: 100%;
+}
+
+.toolbar .content {
+    padding: 10px;
+    display: flex;
+}
+
+.color-palette {
+    display: flex;
+    flex-wrap: wrap;
+    width: 60px;
+    margin-right: 5px;
+}
+.color {
+    width: 20px;
+    height: 20px;
+}
+.eraser {
+    width: 36px;
+    height: 36px;
+    border: 2px solid #000;
+    background-color: #fff;
+}
+
+.color#green {
+    background-color: green;
+}
+.color#blue {
+    background-color: blue;
+}
+.color#red {
+    background-color: red;
+}
+.color#yellow {
+    background-color: yellow;
+}
+.color#orange {
+    background-color: orange;
+}
+.color#black {
+    background-color: black;
+}

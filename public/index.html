@@ -7,6 +7,19 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
+        <div class="toolbar">
+            <div class="content">
+                <div class="color-palette">
+                    <div class="color" id="green" onclick="color(this)"></div>
+                    <div class="color" id="blue" onclick="color(this)"></div>
+                    <div class="color" id="red" onclick="color(this)"></div>
+                    <div class="color" id="yellow" onclick="color(this)"></div>
+                    <div class="color" id="orange" onclick="color(this)"></div>
+                    <div class="color" id="black" onclick="color(this)"></div>
+                </div>
+                <div class="eraser" id="white" onclick="color(this)"></div>
+            </div>
+        </div>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
         <script src="main.js"></script>
     </body>
