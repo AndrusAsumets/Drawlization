@@ -41,10 +41,10 @@ canvas2.addEventListener("mousedown", function (e) { isMouseDown = true }, false
 canvas2.addEventListener("mouseup", function (e) { onUp() }, false);
 canvas2.addEventListener("mouseout", function (e) { onUp() }, false);
 
-canvas2.addEventListener("pointermove", function (e) { onMove(e) }, false);
-canvas2.addEventListener("pointerdown", function (e) { isMouseDown = true }, false);
-canvas2.addEventListener("pointerup", function (e) { onUp() }, false);
-canvas2.addEventListener("pointerout", function (e) { onUp() }, false);
+canvas2.addEventListener("touchmove", function (e) { onMove(e) }, false);
+canvas2.addEventListener("touchdown", function (e) { isMouseDown = true }, false);
+canvas2.addEventListener("touchup", function (e) { onUp() }, false);
+canvas2.addEventListener("touchout", function (e) { onUp() }, false);
 
 function onMove(e) {
 	if (isMouseDown) {
