@@ -39,7 +39,7 @@ players[currentPlayer.id] = currentPlayer;
 
 var isMouseDown = false
 canvas2.addEventListener("mousemove", function (e) {
-	if (isMouseDown) { onMove(e) }
+	onMove(e);
 }, false);
 canvas2.addEventListener("mousedown", function (e) { isMouseDown = true }, false);
 canvas2.addEventListener("mouseup", function (e) { onUp(e) }, false);
@@ -51,14 +51,18 @@ canvas2.addEventListener("touchup", function (e) { onUp(e) }, false);
 canvas2.addEventListener("touchout", function (e) { onUp(e) }, false);
 
 function onMove(e) {
-	e.preventDefault();
-
     // Move cursor along
     cursor.style.left = (e.clientX + canvas2.offsetLeft - (currentPlayer.size / 2)) + 'px';
     cursor.style.top = (e.clientY - (currentPlayer.size / 2)) + 'px';
     cursor.style.display = 'block';
     cursor.style.width = currentPlayer.size + 'px';
     cursor.style.height = currentPlayer.size + 'px';
+
+    if (!isMouseDown) {
+        return;
+    }
+
+	e.preventDefault();
 
 	var action = {
 		action: 'move',
