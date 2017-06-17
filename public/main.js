@@ -35,7 +35,18 @@ drawableLayer = new DrawableLayer({canvas: canvas1, ctx: ctx1});
 
 var isMouseDown = false
 canvas2.addEventListener("mousemove", function (e) {
-    	if (isMouseDown) socket.emit('message', { action: 'move', data: { offsetX: e.offsetX, offsetY: e.offsetY, clientX: e.clientX, clientY: e.clientY }})
+    	if (isMouseDown) {
+			var action = {
+				action: 'move',
+				data: {
+					offsetX: e.offsetX,
+					offsetY: e.offsetY,
+					clientX: e.clientX,
+					clientY: e.clientY
+				}}
+    		socket.emit('message', action)
+    		drawableLayer.drawTick('move', action.data);
+    	}
 }, false);
 canvas2.addEventListener("mousedown", function (e) {
     isMouseDown = true
