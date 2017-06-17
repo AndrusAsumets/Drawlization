@@ -49,7 +49,8 @@ canvas2.addEventListener("touchmove", function (e) { onMove(e) }, false);
 canvas2.addEventListener("touchstart", function (e) { isMouseDown = true; console.log('isMouseDown', isMouseDown) }, false);
 canvas2.addEventListener("touchup", function (e) { onUp(e) }, false);
 canvas2.addEventListener("touchout", function (e) { onUp(e) }, false);
-canvas2.addEventListener("touchcancel", function (e) { onUp(e) }, false);
+// canvas2.addEventListener("touchcancel", function (e) { onUp(e) }, false);
+canvas2.addEventListener("touchend", function (e) { onUp(e) }, false);
 
 function onMove(e) {
     // Move cursor along
