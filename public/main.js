@@ -31,58 +31,93 @@ image.onload = function () {
 };
 image.src = '/mandala.png';
 
-drawableLayer = new DrawableLayer({canvas: canvas1, ctx: ctx1});
+var players = {};
+var currentPlayer = new DrawablePlayer({canvas: canvas1, ctx: ctx1});
+players[currentPlayer.id] = currentPlayer;
 
 var isMouseDown = false
 canvas2.addEventListener("mousemove", function (e) { onMove(e) }, false);
 canvas2.addEventListener("mousedown", function (e) { isMouseDown = true }, false);
 canvas2.addEventListener("mouseup", function (e) { onUp() }, false);
-canvas2.addEventListener("mouseout", function (e) { onOut() }, false);
+canvas2.addEventListener("mouseout", function (e) { onUp() }, false);
 
 canvas2.addEventListener("pointermove", function (e) { onMove(e) }, false);
 canvas2.addEventListener("pointerdown", function (e) { isMouseDown = true }, false);
 canvas2.addEventListener("pointerup", function (e) { onUp() }, false);
-canvas2.addEventListener("pointerout", function (e) { onOut() }, false);
+canvas2.addEventListener("pointerout", function (e) { onUp() }, false);
 
 function onMove(e) {
 	if (isMouseDown) {
 		var action = {
 			action: 'move',
 			data: {
+                playerId: currentPlayer.id,
 				offsetX: e.offsetX,
 				offsetY: e.offsetY,
 				clientX: e.clientX,
 				clientY: e.clientY
 			}}
 		socket.emit('message', action)
-		drawableLayer.drawTick('move', action.data);
+		currentPlayer.drawTick('move', action.data);
 	}
 }
 
 function onUp() {
 	isMouseDown = false
-	socket.emit('message', { action: 'out'})
-	drawableLayer.drawTick('out', { action: 'out'});
-}
-
-function onOut() {
-	isMouseDown = false
-	socket.emit('message', { action: 'out'})
-	drawableLayer.drawTick('out', { action: 'out'});
+	socket.emit('message', { action: 'out', data: { playerId: currentPlayer.id }});
+	currentPlayer.drawTick('out', { action: 'out'});
 }
 
 var socket = io.connect('http://188.166.74.97:1337');
 
 socket.on('connect', function() {
 	console.log('connected')
-});
-	
-socket.on('message', function(msg) {
-	if (msg.action == 'move') drawableLayer.drawTick('move', msg.data);
-	else if (msg.action == 'out') drawableLayer.drawTick('out', msg);
+    socket.emit('message', {action: 'player joins', data: {playerId: currentPlayer.id}});
 });
 
-function DrawableLayer (options) {
+socket.on('message', function(msg) {
+    console.log('message', msg.action);
+    // ...
+	if (msg.action == 'move') {
+        drawTick('move', msg.data);
+    }
+    // ...
+    else if (msg.action == 'out') {
+        drawTick('out', msg.data);
+    }
+    // On new player joining
+    else if (msg.action == 'player joins') {
+        addPlayer(msg.data);
+    }
+    // Existing player introducing themselves
+    else if (msg.action == 'player introduces') {
+        addPlayer(msg.data);
+    }
+});
+
+function drawTick (action, data) {
+    if (data.playerId === currentPlayer.id) return;
+    console.log('Draw', action, data.playerId);
+    players[data.playerId].drawTick(action, data);
+}
+
+function addPlayer (options) {
+    // Don't add the current player
+    if (options.playerId === currentPlayer.id) return;
+    // Don't add already added players
+    if (players[options.playerId]) return;
+
+    console.log('New player', options.playerId);
+
+    var drawablePlayer = new DrawablePlayer({id: options.playerId, canvas: canvas1, ctx: ctx1});
+    players[drawablePlayer.id] = drawablePlayer;
+
+    // New player added? Introduce current player to the new player
+    socket.emit('message', {action: 'player introduces', data: {playerId: currentPlayer.id}});
+}
+
+function DrawablePlayer (options) {
+    this.id = options.id || Math.floor(Math.random() * 1000000000);
     this.flag = false;
     this.prevX = 0;
     this.currX = 0;
@@ -94,10 +129,10 @@ function DrawableLayer (options) {
 
     this.drawTick = function(action, e) {
         if (action == 'down') {
-            this.prevX = this.currX;
-            this.prevY = this.currY;
             this.currX = e.clientX - options.canvas.offsetLeft;
             this.currY = e.clientY - options.canvas.offsetTop;
+            this.prevX = this.currX;
+            this.prevY = this.currY;
 
             this.flag = true;
             this.dot_flag = true;
@@ -112,14 +147,14 @@ function DrawableLayer (options) {
         if (action == 'up' || action == "out") {
             this.flag = false;
             this.prevX = null
-            this.prexY = null
+            this.prevY = null
         }
         if (action == 'move') {
 				if (!this.prevX) this.prevX = e.offsetX
 				if (!this.prevY) this.prevY = e.offsetY
 				this.currX = e.offsetX;
 				this.currY = e.offsetY;
-			
+
 				this.flag = true
 				this.draw();
 				this.prevX = e.offsetX
@@ -140,29 +175,29 @@ function DrawableLayer (options) {
 function color(obj) {
     switch (obj.id) {
         case "green":
-            drawableLayer.x = "green";
+            currentPlayer.x = "green";
             break;
         case "blue":
-            drawableLayer.x = "blue";
+            currentPlayer.x = "blue";
             break;
         case "red":
-            drawableLayer.x = "red";
+            currentPlayer.x = "red";
             break;
         case "yellow":
-            drawableLayer.x = "yellow";
+            currentPlayer.x = "yellow";
             break;
         case "orange":
-            drawableLayer.x = "orange";
+            currentPlayer.x = "orange";
             break;
         case "black":
-            drawableLayer.x = "black";
+            currentPlayer.x = "black";
             break;
         case "white":
-            drawableLayer.x = "white";
+            currentPlayer.x = "white";
             break;
     }
-    if (drawableLayer.x == "white") drawableLayer.y = 14;
-    else drawableLayer.y = 2;
+    if (currentPlayer.x == "white") currentPlayer.y = 14;
+    else currentPlayer.y = 2;
 }
 
 function createHiDPICanvas (w, h, ratio) {
