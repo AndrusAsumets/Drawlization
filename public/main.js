@@ -41,14 +41,15 @@ var isMouseDown = false
 canvas2.addEventListener("mousemove", function (e) {
 	onMove(e);
 }, false);
-canvas2.addEventListener("mousedown", function (e) { isMouseDown = true }, false);
+canvas2.addEventListener("mousedown", function (e) { isMouseDown = true; console.log('isMouseDown2', isMouseDown); }, false);
 canvas2.addEventListener("mouseup", function (e) { onUp(e) }, false);
 canvas2.addEventListener("mouseout", function (e) { onUp(e) }, false);
 
 canvas2.addEventListener("touchmove", function (e) { onMove(e) }, false);
-canvas2.addEventListener("touchdown", function (e) { isMouseDown = true }, false);
+canvas2.addEventListener("touchstart", function (e) { isMouseDown = true; console.log('isMouseDown', isMouseDown) }, false);
 canvas2.addEventListener("touchup", function (e) { onUp(e) }, false);
 canvas2.addEventListener("touchout", function (e) { onUp(e) }, false);
+canvas2.addEventListener("touchcancel", function (e) { onUp(e) }, false);
 
 function onMove(e) {
     // Move cursor along
@@ -63,18 +64,24 @@ function onMove(e) {
     }
 
 	e.preventDefault();
+    console.log('evt.targetTouches[0]', e);
 
 	var action = {
 		action: 'move',
 		data: {
             playerId: currentPlayer.id,
-			offsetX: e.offsetX,
-			offsetY: e.offsetY,
+			offsetX: e.offsetX || e.touches[0].clientX,
+			offsetY: e.offsetY || e.touches[0].clientY,
 			clientX: e.clientX,
 			clientY: e.clientY,
             color: currentPlayer.color,
             size: currentPlayer.size,
-		}}
+		}
+    };
+
+    console.log('data is: ', action.data);
+
+
 	socket.emit('message', action)
 	currentPlayer.drawTick('move', action.data);
 }
@@ -115,6 +122,7 @@ socket.on('message', function(msg) {
 });
 
 function drawTick (action, data) {
+    console.log('action', action)
     if (data.playerId === currentPlayer.id) return;
     console.log('Draw', action, data.playerId);
     if (data.color) {
@@ -154,7 +162,6 @@ function DrawablePlayer (options) {
 
     this.drawTick = function(action, e) {
         if (action == 'down') {
-            console.log('down');
             this.currX = e.clientX - options.canvas.offsetLeft;
             this.currY = e.clientY - options.canvas.offsetTop;
             this.prevX = this.currX;
@@ -191,7 +198,7 @@ function DrawablePlayer (options) {
         options.ctx.beginPath();
         options.ctx.moveTo(this.prevX, this.prevY);
         options.ctx.lineTo(this.currX, this.currY);
-        options.ctx.lineCap="round";
+        options.ctx.lineCap="square";
         options.ctx.strokeStyle = this.color;
         options.ctx.lineWidth = this.size;
         options.ctx.stroke();
