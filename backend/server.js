@@ -51,10 +51,6 @@ async function browser() {
     await Network.enable()
 	console.log('test', 2)
 	
-	console.log('test', 3)
-	const Runtime = protocol.Runtime
-	console.log('test', 4)
-	await Promise.all([Page.enable(), Runtime.enable()])
 	console.log('test', 5)
 	
 	await Page.navigate({ url: 'http://localhost:1337/' })
