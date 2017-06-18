@@ -7,6 +7,7 @@ var cors = require('koa-cors')
 var fs = require('fs')
 const IO = require('koa-socket')
 const io = new IO()
+const CDP = require('chrome-remote-interface')
 
 const PORT = process.env.PORT || 1337
 let buffer = null
