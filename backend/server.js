@@ -7,10 +7,8 @@ var cors = require('koa-cors')
 var fs = require('fs')
 const IO = require('koa-socket')
 const io = new IO()
-const CDP = require('chrome-remote-interface')
 
 const PORT = process.env.PORT || 1337
-let buffer = null
 
 app.use(bodyParser())
 app.use(cors())
@@ -33,15 +31,18 @@ app.listen(PORT)
 
 console.log('Server is listening on', PORT + '.')
 
-
+const CDP = require('chrome-remote-interface')
 (async function() {
 	const chrome = await launchChrome();
 	const protocol = await CDP({ port: chrome.port })
 	
 	// Extract the DevTools protocol domains we need and enable them.
 	// See API docs: https://chromedevtools.github.io/devtools-protocol/
-	const { Page, Runtime } = protocol
+	const Page = protocol.Page
+	const Runtime = protocol.Runtime
 	await Promise.all([Page.enable(), Runtime.enable()])
+	
+	console.log(protocol)
 	
 	setTimeout(function() {
 		Page.navigate({ url: 'http://localhost:1337/' })
