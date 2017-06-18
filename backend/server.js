@@ -55,7 +55,7 @@ async function browser() {
 	
 	await timeout(1000)
 	
-	await Page.navigate({ url: 'http://localhost:1337/' })
+	await Page.navigate({ url: 'http://188.166.74.97:1337/' })
 	console.log('test', 6)
 	await Page.loadEventFired()
 	console.log('test', 7)
