@@ -35,19 +35,21 @@ console.log('Server is listening on', PORT + '.')
 
 (async function() {
 	const chrome = await launchChrome();
-	const protocol = await CDP({port: chrome.port})
+	const protocol = await CDP({ port: chrome.port })
 	
 	// Extract the DevTools protocol domains we need and enable them.
 	// See API docs: https://chromedevtools.github.io/devtools-protocol/
-	const {Page, Runtime} = protocol
+	const { Page, Runtime } = protocol
 	await Promise.all([Page.enable(), Runtime.enable()])
 	
-	Page.navigate({url: 'http://localhost:1337/'})
-
-	Page.loadEventFired(async () => {
-		setInterval(function() {
-			const screenshot = await Page.captureScreenshot({'png'})
-			buffer = new Buffer(screenshot.data, 'base64')
-		}, 100)
-	})
+	setTimeout(function() {
+		Page.navigate({ url: 'http://localhost:1337/' })
+	
+		Page.loadEventFired(async () => {
+			setInterval(function() {
+				const screenshot = await Page.captureScreenshot({'png'})
+				buffer = new Buffer(screenshot.data, 'base64')
+			}, 100)
+		})
+	}, 1000)
 })()
