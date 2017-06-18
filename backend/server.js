@@ -53,6 +53,8 @@ async function browser() {
 	
 	console.log('test', 5)
 	
+	await timeout(1000)
+	
 	await Page.navigate({ url: 'http://localhost:1337/' })
 	console.log('test', 6)
 	await Page.loadEventFired()
