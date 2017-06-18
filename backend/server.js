@@ -32,7 +32,9 @@ app.listen(PORT)
 console.log('Server is listening on', PORT + '.')
 
 const CDP = require('chrome-remote-interface')
+
 (async function() {
+	/*
 	console.log('test', 0)
 	const chrome = await launchChrome()
 	console.log('test', 1)
@@ -60,4 +62,5 @@ const CDP = require('chrome-remote-interface')
 	console.log('test', 9)
 	buffer = new Buffer(screenshot.data, 'base64')
 	console.log('test', 10)
+	*/
 })()
