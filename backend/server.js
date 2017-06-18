@@ -9,6 +9,7 @@ const IO = require('koa-socket')
 const io = new IO()
 
 const PORT = process.env.PORT || 1337
+let buffer = null
 
 app.use(bodyParser())
 app.use(cors())
@@ -55,7 +56,7 @@ async function browser() {
 	console.log('test', 7)
 	await timeout(1000)
 	console.log('test', 8)
-
+	
 	console.log(Page)
 	const screenshot = await Page.captureScreenshot('png')
 	console.log('test', 9)
