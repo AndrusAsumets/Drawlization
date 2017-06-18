@@ -36,7 +36,7 @@ const CDP = require('chrome-remote-interface')
 
 async function browser() {
 	console.log('test', 0)
-	const client = await CDP()
+	const chrome = await CDP()
 	console.log('test', 1)
 	const protocol = await CDP({ port: chrome.port })
 	console.log('test', 1.1)
