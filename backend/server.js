@@ -33,25 +33,31 @@ console.log('Server is listening on', PORT + '.')
 
 const CDP = require('chrome-remote-interface')
 (async function() {
-	const chrome = await launchChrome();
+	console.log('test', 0)
+	const chrome = await launchChrome()
+	console.log('test', 1)
 	const protocol = await CDP({ port: chrome.port })
+	console.log('test', 2)
 	
 	// Extract the DevTools protocol domains we need and enable them.
 	// See API docs: https://chromedevtools.github.io/devtools-protocol/
 	const Page = protocol.Page
+	console.log('test', 3)
 	const Runtime = protocol.Runtime
+	console.log('test', 4)
 	await Promise.all([Page.enable(), Runtime.enable()])
+	console.log('test', 5)
 	
-	console.log(protocol)
-	
-	setTimeout(function() {
-		Page.navigate({ url: 'http://localhost:1337/' })
-	
-		Page.loadEventFired(async () => {
-			setInterval(function() {
-				const screenshot = await Page.captureScreenshot({'png'})
-				buffer = new Buffer(screenshot.data, 'base64')
-			}, 100)
-		})
-	}, 1000)
+	await Page.navigate({ url: 'http://localhost:1337/' })
+	console.log('test', 6)
+	await Page.loadEventFired()
+	console.log('test', 7)
+	await timeout(1000)
+	console.log('test', 8)
+
+	console.log(Page)
+	const screenshot = await Page.captureScreenshot('png')
+	console.log('test', 9)
+	buffer = new Buffer(screenshot.data, 'base64')
+	console.log('test', 10)
 })()
