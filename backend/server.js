@@ -36,14 +36,21 @@ const CDP = require('chrome-remote-interface')
 
 async function browser() {
 	console.log('test', 0)
-	const chrome = await launchChrome()
+	const client = await CDP()
 	console.log('test', 1)
 	const protocol = await CDP({ port: chrome.port })
+	console.log('test', 1.1)
+    const {DOM, Emulation, Network, Page, Runtime} = client
+    console.log('test', 1.2)
+
+    // Enable events on domains we are interested in.
+    await Page.enable()
+    console.log('test', 1.3)
+    await DOM.enable()
+    console.log('test', 1.4)
+    await Network.enable()
 	console.log('test', 2)
 	
-	// Extract the DevTools protocol domains we need and enable them.
-	// See API docs: https://chromedevtools.github.io/devtools-protocol/
-	const Page = protocol.Page
 	console.log('test', 3)
 	const Runtime = protocol.Runtime
 	console.log('test', 4)
