@@ -5,6 +5,7 @@ let router = require('koa-router')()
 var bodyParser = require('koa-bodyparser')
 var cors = require('koa-cors')
 var fs = require('fs')
+const timeout = require('delay')
 const IO = require('koa-socket')
 const io = new IO()
 
@@ -39,7 +40,7 @@ async function browser() {
 	const chrome = await CDP()
 	console.log('test', 1)
 	console.log('test', 1.1)
-    const {DOM, Emulation, Network, Page, Runtime} = client
+    const {DOM, Emulation, Network, Page, Runtime} = chrome
     console.log('test', 1.2)
 
     // Enable events on domains we are interested in.
