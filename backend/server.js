@@ -8,9 +8,10 @@ var fs = require('fs')
 const timeout = require('delay')
 const IO = require('koa-socket')
 const io = new IO()
+const CDP = require('chrome-remote-interface')
 
 const PORT = process.env.PORT || 1337
-let buffer = null
+var buffer = null
 
 app.use(bodyParser())
 app.use(cors())
@@ -33,8 +34,6 @@ app.listen(PORT)
 
 console.log('Server is listening on', PORT + '.')
 
-const CDP = require('chrome-remote-interface')
-
 async function browser() {
 	const chrome = await CDP()
     const { DOM, Emulation, Network, Page, Runtime } = chrome
@@ -43,10 +42,14 @@ async function browser() {
     await DOM.enable()
     await Network.enable()
 	await timeout(1000)
-	await Page.navigate({ url: 'http://188.166.74.97:1337/' })
+	await Emulation.setVisibleSize({ width: 800, height: 800 })
+	await Page.navigate({ url: 'http://188.166.74.97:1337/server.html' })
 	await Page.loadEventFired()
 	await timeout(1000)
-	const screenshot = await Page.captureScreenshot('png')
-	buffer = new Buffer(screenshot.data, 'base64')
+	
+	setInterval(async function() {
+		const screenshot = await Page.captureScreenshot({ format: 'png' })
+		buffer = new Buffer(screenshot.data, 'base64').toString('base64')
+	}, 1000)
 }
 browser()

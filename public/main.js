@@ -95,8 +95,16 @@ function onUp(e) {
 var socket = io.connect('http://188.166.74.97:1337');
 
 socket.on('connect', function() {
-	console.log('connected')
+	console.log('connected');
     socket.emit('message', {action: 'player joins', data: {playerId: currentPlayer.id}});
+});
+
+socket.on('buffer', function(buffer) {
+	var image = new Image();
+	image.onload = function() {
+		ctx1.drawImage(this, 0, 0, 800, 800);
+	};
+	image.src = 'data:image/png;base64,' + buffer;
 });
 
 socket.on('message', function(msg) {
