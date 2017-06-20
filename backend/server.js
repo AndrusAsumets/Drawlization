@@ -11,7 +11,7 @@ const io = new IO()
 const CDP = require('chrome-remote-interface')
 
 const PORT = process.env.PORT || 1337
-var buffer = null
+let buffer = fs.readFileSync('buffer.png', 'utf8') || null
 
 app.use(bodyParser())
 app.use(cors())
@@ -50,6 +50,7 @@ async function browser() {
 	setInterval(async function() {
 		const screenshot = await Page.captureScreenshot({ format: 'png' })
 		buffer = new Buffer(screenshot.data, 'base64').toString('base64')
+		fs.writeFileSync('buffer.png', buffer, 'utf8')
 	}, 1000)
 }
 browser()
