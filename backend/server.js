@@ -43,7 +43,7 @@ async function browser() {
     await Network.enable()
 	await timeout(1000)
 	await Emulation.setVisibleSize({ width: 800, height: 800 })
-	await Page.navigate({ url: 'http://188.166.74.97:1337/server.html' })
+	await Page.navigate({ url: 'http://localhost:1337/server.html' })
 	await Page.loadEventFired()
 	await timeout(1000)
 	
