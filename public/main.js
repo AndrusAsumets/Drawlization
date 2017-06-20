@@ -31,7 +31,7 @@ var image = new Image();
 image.onload = function () {
     ctx2.drawImage(this, 0, 0, this.naturalWidth / 2, this.naturalHeight / 2);
 };
-image.src = '/mandala.png';
+if (window.location.pathname != '/server.html') image.src = '/mandala.png';
 
 var players = {};
 var currentPlayer = new DrawablePlayer({canvas: canvas1, ctx: ctx1});
