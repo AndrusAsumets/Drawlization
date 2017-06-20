@@ -36,36 +36,18 @@ console.log('Server is listening on', PORT + '.')
 const CDP = require('chrome-remote-interface')
 
 async function browser() {
-	console.log('test', 0)
 	const chrome = await CDP()
-	console.log('test', 1)
-	console.log('test', 1.1)
-    const {DOM, Emulation, Network, Page, Runtime} = chrome
-    console.log('test', 1.2)
+    const { DOM, Emulation, Network, Page, Runtime } = chrome
 
-    // Enable events on domains we are interested in.
     await Page.enable()
-    console.log('test', 1.3)
     await DOM.enable()
-    console.log('test', 1.4)
     await Network.enable()
-	console.log('test', 2)
-	
-	console.log('test', 5)
-	
 	await timeout(1000)
-	
 	await Page.navigate({ url: 'http://188.166.74.97:1337/' })
-	console.log('test', 6)
 	await Page.loadEventFired()
-	console.log('test', 7)
 	await timeout(1000)
-	console.log('test', 8)
-	
-	console.log(Page)
 	const screenshot = await Page.captureScreenshot('png')
-	console.log('test', 9)
-	buffer = new Buffer(screenshot.data, 'base64')
-	console.log('test', 10)
+	const arrayBuffer = new Buffer(screenshot.data, 'base64')
+	buffer = new Buffer(new Uint8Array(arrayBuffer))
 }
 browser()
