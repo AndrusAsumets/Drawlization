@@ -50,7 +50,7 @@ async function browser() {
 	setInterval(async function() {
 		const screenshot = await Page.captureScreenshot({ format: 'png' })
 		buffer = new Buffer(screenshot.data, 'base64').toString('base64')
-		fs.writeFile('buffer.png', buffer, 'utf8')
+		fs.writeFileSync('buffer.png', buffer, 'utf8')
 	}, 1000)
 }
 browser()
