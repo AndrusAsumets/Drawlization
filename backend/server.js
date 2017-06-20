@@ -47,7 +47,6 @@ async function browser() {
 	await Page.loadEventFired()
 	await timeout(1000)
 	const screenshot = await Page.captureScreenshot('png')
-	const arrayBuffer = new Buffer(screenshot.data, 'base64')
-	buffer = new Buffer(new Uint8Array(arrayBuffer))
+	buffer = new Buffer(screenshot.data, 'base64')
 }
 browser()
